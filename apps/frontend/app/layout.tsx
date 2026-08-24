@@ -27,6 +27,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+          rel="stylesheet"
+        />
+        <link
           href="https://fonts.cdnfonts.com/css/gilroy-bold"
           rel="stylesheet"
         />

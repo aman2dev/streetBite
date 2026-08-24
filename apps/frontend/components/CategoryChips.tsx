@@ -11,8 +11,8 @@ export default function CategoryChips() {
   const { activeCategory, setActiveCategory } = useFilterStore();
 
   const getIcon = (iconName: string | null) => {
-    if (iconName === 'icecream') return <IceCream size={32} className="text-primary" />;
-    if (iconName === 'restaurant') return <Utensils size={32} className="text-primary" />;
+    if (iconName === 'icecream') return <IceCream size={36} className="text-primary" />;
+    if (iconName === 'restaurant') return <Utensils size={36} className="text-primary" />;
     return null;
   };
 
@@ -35,7 +35,7 @@ export default function CategoryChips() {
           >
             <div 
               className={clsx(
-                "w-24 h-24 rounded-full border-4 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] overflow-hidden transition-colors",
+                "w-24 h-24 rounded-full overflow-hidden group-hover:-translate-y-1 transition-transform",
                 activeCategory === cat.id ? "ring-4 ring-primary ring-offset-2 ring-offset-surface bg-primary-fixed" : "bg-surface-container"
               )}
             >

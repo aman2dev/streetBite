@@ -4,7 +4,7 @@ import React from 'react';
 import StreetFoodCard from './StreetFoodCard';
 import { MOCK_CARTS } from '../lib/mockData';
 import { useFilterStore } from '../store';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
 export default function Feed() {
   const { activeCategory, searchQuery } = useFilterStore();
@@ -26,7 +26,7 @@ export default function Feed() {
         >
           {searchQuery ? 'Search Results' : 'Top Rated Near You'}
         </h2>
-        <button className="text-on-surface bg-primary-fixed border-2 border-on-surface px-6 py-2 rounded-full shadow-[4px_4px_0px_0px_#1a1c1c] font-label-md uppercase tracking-wider hover:-translate-y-1 transition-transform font-bold hidden sm:block">
+        <button className="text-on-surface bg-primary-fixed px-6 py-2 rounded-full font-label-md uppercase tracking-wider hover:-translate-y-1 transition-transform font-bold hidden sm:block">
           View All
         </button>
       </div>

@@ -9,17 +9,18 @@ export default function Hero() {
 
   return (
     <section className="relative w-full min-h-[70vh] flex flex-col md:flex-row items-center justify-between gap-8 mb-xl">
-      <div className="relative z-10 w-full md:w-1/2 flex flex-col items-start bg-surface-container-lowest p-8 md:p-12 rounded-3xl border-4 border-on-surface shadow-[12px_12px_0px_0px_#1a1c1c] transform md:-translate-y-8 md:translate-x-8">
+      {/* Floating Bold Box for Content */}
+      <div className="relative z-10 w-full md:w-1/2 flex flex-col items-start bg-surface-container-lowest p-8 md:p-12 rounded-3xl border-4 border-on-surface shadow-[12px_12px_0px_0px_#1a1c1c] transform md:-translate-y-12 md:translate-x-8">
         <span className="inline-block py-sm px-md bg-primary-container text-on-primary-container rounded-full text-label-md uppercase tracking-wider mb-lg border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] font-bold">
           Patna Edition
         </span>
         <h1 
-          className="text-on-surface text-5xl md:text-7xl mb-md tracking-tight font-bold leading-tight" 
-          style={{ fontFamily: "'Gilroy-Bold', sans-serif" }}
+          className="text-on-surface text-5xl md:text-7xl mb-md tracking-tight font-extrabold leading-tight" 
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
           Discover the Heart of <br />
           <span 
-            className="text-primary tracking-widest inline-block transform -rotate-2 bg-primary-fixed px-4 mt-2" 
+            className="text-primary tracking-widest inline-block transform -rotate-2 bg-primary-fixed px-4 mt-2 rounded-3xl" 
             style={{ WebkitTextStroke: "2px #1a1c1c", textShadow: "2px 2px 0 #1a1c1c" }}
           >
             Street Food
@@ -39,7 +40,7 @@ export default function Hero() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="bg-primary hover:bg-surface-tint text-on-primary rounded-full px-xl py-md font-label-md uppercase tracking-wider transition-all duration-300 border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] font-bold whitespace-nowrap">
+          <button className="bg-primary hover:bg-surface-tint text-on-primary rounded-full px-xl py-md font-label-md uppercase tracking-wider transition-all duration-300 font-bold whitespace-nowrap">
             Find Food
           </button>
         </div>
@@ -62,11 +63,11 @@ export default function Hero() {
       </div>
 
       {/* Offset Background Illustration */}
-      <div className="relative w-full md:w-3/5 h-[500px] md:h-[700px] md:absolute md:right-0 md:top-0 rounded-3xl overflow-hidden border-4 border-on-surface shadow-[-12px_12px_0px_0px_#1a1c1c] z-0 hidden md:block">
+      <div className="relative w-full md:w-3/5 h-[500px] md:h-[700px] md:absolute md:right-0 md:top-0 rounded-3xl overflow-hidden border-4 z-0">
         <img 
           alt="Vibrant, high-energy pop art illustration of a bustling street food market." 
           className="w-full h-full object-cover mix-blend-multiply opacity-90" 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_A5QX6jHknjRuZ5AN4b8mfMAbvDoya6E9qip_IK2oK17Wq4VR7wG4x11G41-I0PaRx6eF-Vz0NxFDcip4qBAF6_6flChUhxdJZsCHsStI4133YAvc4ljxd7jHANRcQ9lMa42R5NhHRlYpHZxYS1fIsraHCcBGu2Z7nET5l7kCIkDki0fTwSwvklAf9Kc79VgzJu9NyhevDtnOuFvOc3ig3jxm9M98CKz3dNlWgLMly4aMKwWjCAvd"
+          src="/streetBite.png"
         />
         <div className="absolute inset-0 bg-primary/20 mix-blend-overlay"></div>
       </div>
