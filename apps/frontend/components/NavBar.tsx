@@ -8,7 +8,7 @@ export default function Header() {
     <header className="fixed top-4 left-0 right-0 max-w-7xl mx-auto w-[calc(100%-2rem)] z-50 bg-surface/90 backdrop-blur-xl shadow-[4px_4px_0px_0px_#1a1c1c] border-2 border-on-surface rounded-full">
       <div className="h-20 w-full px-xl flex items-center justify-between">
         <div className="flex items-center gap-lg">
-          <div className="flex items-center gap-sm">
+          <Link href="/" className="flex items-center gap-sm cursor-pointer">
             <img
               alt="StreetBite"
               className="h-8 w-auto object-contain"
@@ -17,7 +17,7 @@ export default function Header() {
             <span className="font-headline-lg text-primary tracking-tight" style={{ fontFamily: "'Gilroy-Bold', sans-serif" }}>
               StreetBite
             </span>
-          </div>
+          </Link>
         </div>
 
         <nav className="flex items-center gap-lg">
