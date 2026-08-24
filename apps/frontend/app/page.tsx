@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="w-full pt-50 min-h-screen bg-surface">
+      <main className="w-full pt-32 lg:pt-36 min-h-screen bg-surface">
         <div className="flex flex-col w-full px-4 md:px-8 max-w-[1600px] mx-auto">
           <Hero />
           <div className="w-full flex flex-col gap-xl pb-xl">
