@@ -7,17 +7,20 @@ import { useSavedStore } from '../store';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 
+import Link from 'next/link';
+
 export default function StreetFoodCard({ cart }: { cart: StreetFoodCart }) {
   const { savedCartIds, toggleSaved } = useSavedStore();
   const isSaved = savedCartIds.includes(cart.id);
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8 }}
-      className="bg-surface-container-lowest rounded-2xl overflow-hidden hover:-translate-y-2 transition-transform duration-300 flex flex-col group relative"
-    >
+    <Link href={`/cart/${cart.id}`} className="block h-full">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -8 }}
+        className="bg-surface-container-lowest rounded-2xl overflow-hidden hover:-translate-y-2 transition-transform duration-300 flex flex-col group relative h-full border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c]"
+      >
       <div className="relative h-48 w-full overflow-hidden">
         <img 
           alt={cart.name} 
@@ -66,5 +69,6 @@ export default function StreetFoodCard({ cart }: { cart: StreetFoodCart }) {
         </p>
       </div>
     </motion.div>
+  </Link>
   );
 }
