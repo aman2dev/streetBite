@@ -120,11 +120,11 @@ function SearchContent() {
           </div>
         </div>
 
-        {/* OLX-Style 2 Column Grid */}
+       
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 flex-1 items-start">
           
           {/* Left Sidebar Filter (Desktop) */}
-          <aside className="hidden lg:flex flex-col gap-6 bg-surface-container-lowest border-2 border-on-surface p-6 rounded-2xl shadow-[4px_4px_0px_0px_#1a1c1c] sticky top-28">
+          <aside className="hidden lg:flex flex-col gap-6 bg-surface-container-lowest border-2 border-on-surface p-6 rounded-2xl  sticky top-28">
             <div className="flex items-center justify-between border-b-2 border-on-surface pb-3">
               <h3 className="font-bold text-xl text-on-surface flex items-center gap-2">
                 <Filter size={20} className="text-primary" /> Filters
@@ -206,7 +206,7 @@ function SearchContent() {
           <section className="lg:col-span-3 flex flex-col gap-6">
             
             {/* Header Results Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-container-lowest border-2 border-on-surface p-4 rounded-xl shadow-[2px_2px_0px_0px_#1a1c1c]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-container-lowest border-2 border-on-surface p-4 rounded-x">
               <div>
                 <h1 className="font-headline-md text-2xl font-bold text-on-surface">
                   {searchTerm ? `Results for "${searchTerm}"` : 'All Food Carts'}

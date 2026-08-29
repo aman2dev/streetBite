@@ -10,7 +10,7 @@ interface CartHeaderInfoProps {
 
 export default function CartHeaderInfo({ cart }: CartHeaderInfoProps) {
   return (
-    <div className="lg:col-span-5 flex flex-col gap-6 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl border-4 border-on-surface shadow-[8px_8px_0px_0px_#1a1c1c]">
+    <div className="lg:col-span-5 flex flex-col gap-6 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl">
       <div>
         <span className="inline-block py-1 px-3 bg-primary-container text-on-primary-container rounded-full text-xs font-bold uppercase tracking-wider mb-3 border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c]">
           {cart.category}

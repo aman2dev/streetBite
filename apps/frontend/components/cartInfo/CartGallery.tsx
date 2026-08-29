@@ -16,7 +16,7 @@ export default function CartGallery({ cart, currentRatingAvg }: CartGalleryProps
 
   return (
     <div className="lg:col-span-7 flex flex-col gap-4">
-      <div className="relative h-[320px] sm:h-[420px] w-full rounded-3xl overflow-hidden border-4 border-on-surface shadow-[8px_8px_0px_0px_#1a1c1c] bg-surface-container">
+      <div className="relative h-[320px] sm:h-[420px] w-full rounded-3xl overflow-hidden">
         <img
           src={selectedImage}
           alt={cart.name}

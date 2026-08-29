@@ -85,7 +85,7 @@ export default function Hero() {
       </div>
 
       {/* Offset Background Illustration (Desktop Widescreen Only) */}
-      <div className="hidden xl:block relative xl:w-3/5 xl:h-[700px] xl:absolute xl:right-0 xl:top-0 rounded-3xl overflow-hidden border-4 border-on-surface xl:shadow-[12px_12px_0px_0px_#1a1c1c] z-0">
+      <div className="hidden xl:block relative xl:w-3/5 xl:h-[700px] xl:absolute xl:right-0 xl:top-0 rounded-3xl overflow-hidden z-0">
         <img 
           alt="Vibrant, high-energy pop art illustration of a bustling street food market." 
           className="w-full h-full object-cover mix-blend-multiply opacity-90" 
