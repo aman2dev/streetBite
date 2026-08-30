@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Clock, Calendar, MapPin, Utensils, Phone } from 'lucide-react';
+import { Clock, Calendar, MapPin, Utensils, Phone, ExternalLink, Navigation } from 'lucide-react';
 import { StreetFoodCart } from '../../lib/mockData';
 
 interface CartHeaderInfoProps {
@@ -9,12 +9,21 @@ interface CartHeaderInfoProps {
 }
 
 export default function CartHeaderInfo({ cart }: CartHeaderInfoProps) {
+  const mapLink = cart.googleMapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cart.name + ' ' + (cart.address || 'Patna'))}`;
+
   return (
-    <div className="lg:col-span-5 flex flex-col gap-6 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl">
+    <div className="lg:col-span-5 flex flex-col gap-6 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl border-2 border-on-surface shadow-[6px_6px_0px_0px_#1a1c1c]">
       <div>
-        <span className="inline-block py-1 px-3 bg-primary-container text-on-primary-container rounded-full text-xs font-bold uppercase tracking-wider mb-3 border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c]">
-          {cart.category}
-        </span>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <span className="inline-block py-1 px-3 bg-primary-container text-on-primary-container rounded-full text-xs font-bold uppercase tracking-wider border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c]">
+            {cart.category}
+          </span>
+          <span className={`py-1 px-3 rounded-full text-xs font-extrabold uppercase border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] ${
+            cart.isOpen !== false ? 'bg-emerald-400 text-slate-900' : 'bg-rose-400 text-slate-900'
+          }`}>
+            {cart.isOpen !== false ? '🟢 Open Now' : '🔴 Closed'}
+          </span>
+        </div>
         <h1 
           className="text-3xl sm:text-4xl text-on-surface font-extrabold leading-tight mb-2"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -78,21 +87,34 @@ export default function CartHeaderInfo({ cart }: CartHeaderInfoProps) {
       </div>
 
       {/* Location Address */}
-      <div className="bg-surface-container p-4 rounded-2xl border-2 border-on-surface">
-        <span className="text-xs uppercase font-extrabold text-on-surface-variant block mb-1">Cart Address</span>
-        <p className="text-sm font-bold text-on-surface">
-          📍 {cart.address || "Main Market Chowk, Patna"}
-        </p>
+      <div className="bg-surface-container p-4 rounded-2xl border-2 border-on-surface flex items-start justify-between gap-3">
+        <div>
+          <span className="text-xs uppercase font-extrabold text-on-surface-variant block mb-1">Cart Address</span>
+          <p className="text-sm font-bold text-on-surface">
+            📍 {cart.address || "Main Market Chowk, Patna"}
+          </p>
+        </div>
       </div>
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 mt-2">
         <a
           href={`tel:${cart.phone || '+919876543210'}`}
-          className="flex-1 bg-primary hover:bg-surface-tint text-on-primary font-extrabold py-3 px-6 rounded-2xl border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] uppercase tracking-wider flex items-center justify-center gap-2 transition-transform active:translate-x-0.5 active:translate-y-0.5"
+          className="flex-1 bg-surface-container hover:bg-surface-variant text-on-surface font-extrabold py-3 px-6 rounded-2xl border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] uppercase tracking-wider flex items-center justify-center gap-2 transition-transform active:translate-x-0.5 active:translate-y-0.5"
         >
           <Phone size={18} />
           <span>Call Cart</span>
+        </a>
+
+        <a
+          href={mapLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 bg-primary hover:bg-amber-400 text-on-primary font-extrabold py-3 px-6 rounded-2xl border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] uppercase tracking-wider flex items-center justify-center gap-2 transition-transform active:translate-x-0.5 active:translate-y-0.5"
+        >
+          <Navigation size={18} />
+          <span>Google Maps</span>
+          <ExternalLink size={14} className="opacity-80" />
         </a>
       </div>
     </div>

@@ -30,6 +30,9 @@ export default function Header() {
           <Link href="/saved" className="text-label-md text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider hidden md:block">
             Saved
           </Link>
+          <Link href="/admin" className="px-3 py-1 bg-primary text-on-primary rounded-full text-label-sm uppercase tracking-wider font-extrabold border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] hover:-translate-y-0.5 transition-transform flex items-center gap-1">
+            ⚡ Admin
+          </Link>
           
           <div className="flex items-center gap-sm pl-md border-l border-on-surface">
             <img
