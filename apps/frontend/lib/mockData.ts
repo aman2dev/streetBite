@@ -21,6 +21,7 @@ export interface StreetFoodCart {
   operatingDays?: string;
   activeWeeks?: number;
   address?: string;
+  googleMapUrl?: string;
   phone?: string;
   description?: string;
   reviewsCount?: number;
@@ -42,6 +43,7 @@ export const MOCK_CARTS: StreetFoodCart[] = [
     operatingDays: "Mon - Sat (6 days/week)",
     activeWeeks: 104, // 2 years
     address: "Stall #12, Near Maurya Lok Complex, Dak Bungalow Road, Patna",
+    googleMapUrl: "https://maps.google.com/?q=Maurya+Lok+Complex+Patna",
     phone: "+91 98765 43210",
     description: "Famous authentic Bihari Litti Chokha roasted on coal embers and dipped in hot organic A2 Desi Ghee. Serving happy street food lovers in Patna for over 2 years!",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAiw4e3fUfqteAO4ixcLNH3kbRrUl0HqXKoPJNwdfRlU-NT2eckprko2XXPQsKyNgNMev9UodzItakOZR81Zyh86ObNwmfOgBw6hUWo7NoXSWA8o0ByG_MpnxwUcQ_Uq0Eh_j5K36nmnnmvUAuVkZlQj1WliKN0C_HZnledsAMu5stJP8YmP4c18c9BLF51ON2phWKpwAY_-SlDzw18xg4notqHqRtqaNVGmAxjiknPX1S-d7xeFKGE",
