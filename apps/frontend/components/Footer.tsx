@@ -1,21 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
+import { UtensilsCrossed } from 'lucide-react';
 
 export default function Footer() {
   return (
     <footer className="w-full bg-surface-container-low py-xl mt-auto border-t-4 border-on-surface">
       <div className="max-w-7xl mx-auto px-xl flex flex-col md:flex-row justify-between items-center gap-lg">
-        <div className="flex items-center gap-sm">
-          <img 
-            alt="StreetBite" 
-            className="h-8 w-auto grayscale opacity-80" 
-            src="https://lh3.googleusercontent.com/aida/AEtjO1UUmzIJCqTTgZZmT97IDRMlKzoiXYjra0D5PmQws4w30o60bsJOJuI3GC3yPgYbCqI48IIS-dgDHE5bHpHqXhlvge2kSLiQyDKyktBdsHZFwpz7Zu27Rc9yp2rs7JjkwxRTOu0Uve7jo1fZPKrvibPtRHoLSZwg_fV8-J3PNRcXeMMQXprWenjGpX5srry4iiojCFYa2q9M7GFwNmhCfMDFsHnfHxuA9bXL2xXFfPoBlMGy-yJIADDYIxo"
-          />
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 bg-primary text-on-primary rounded-lg border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] flex items-center justify-center font-black text-sm">
+            <UtensilsCrossed size={16} className="stroke-[2.5]" />
+          </div>
           <span 
-            className="font-headline-md text-on-surface font-bold text-xl" 
-            style={{ fontFamily: "'Gilroy-Bold', sans-serif" }}
+            className="font-headline-md text-on-surface font-black text-xl tracking-tight" 
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            StreetBite
+            Street<span className="text-primary">Bite</span>
           </span>
         </div>
         

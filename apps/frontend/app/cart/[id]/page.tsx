@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { MOCK_CARTS, Review } from '../../../lib/mockData';
+import { MOCK_CARTS, Review, StreetFoodCart } from '../../../lib/mockData';
+import { fetchCartById, insertReview } from '../../../lib/supabase/adapters';
 import Header from '../../../components/NavBar';
 import Footer from '../../../components/Footer';
 import BottomNav from '../../../components/BottomNav';
@@ -11,7 +12,8 @@ import {
   CartHeaderInfo, 
   CartMenu, 
   CartRatingForm, 
-  CartReviewsList 
+  CartReviewsList,
+  CartChat
 } from '../../../components/cartInfo';
 import { Heart, ArrowLeft, Share2 } from 'lucide-react';
 import { useSavedStore } from '../../../store';
@@ -20,27 +22,36 @@ import clsx from 'clsx';
 export default function CartDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const cartId = params?.id as string;
+  const cartId = (params?.id as string) || '1';
 
-  const foundCart = MOCK_CARTS.find((c) => c.id === cartId) || MOCK_CARTS[0];
+  const initialCart = MOCK_CARTS.find((c) => c.id === cartId) || MOCK_CARTS[0]!;
+  const [cart, setCart] = useState<StreetFoodCart>(initialCart);
 
-  if (!foundCart) {
-    return (
-      <div className="w-full pt-32 min-h-screen bg-surface flex items-center justify-center">
-        <p className="text-xl font-bold text-on-surface">Cart not found.</p>
-      </div>
-    );
-  }
+  const [reviewsList, setReviewsList] = useState<Review[]>(cart.reviews || []);
 
-  const cart = foundCart;
+  useEffect(() => {
+    async function loadCartData() {
+      const supabaseCart = await fetchCartById(cartId);
+      if (supabaseCart) {
+        setCart(supabaseCart);
+        if (supabaseCart.reviews) {
+          setReviewsList(supabaseCart.reviews);
+        }
+      }
+    }
+    loadCartData();
+  }, [cartId]);
+
   const { savedCartIds, toggleSaved } = useSavedStore();
   const isSaved = savedCartIds.includes(cart.id);
 
-  // Review & Rating State
-  const [reviewsList, setReviewsList] = useState<Review[]>(cart.reviews || []);
-
-  const handleAddReview = (newReview: Review) => {
+  const handleAddReview = async (newReview: Review) => {
     setReviewsList((prev) => [newReview, ...prev]);
+    try {
+      await insertReview(cart.id, newReview.rating, newReview.comment);
+    } catch (err) {
+      console.warn('Note: Review saved locally. Supabase write requires auth user or anon insert policy:', err);
+    }
   };
 
   // Calculated rating average
@@ -101,6 +112,9 @@ export default function CartDetailPage() {
           {/* Menu Section */}
           <CartMenu menu={cart.menu} />
 
+          {/* Realtime Cart Chat */}
+          <CartChat cartId={cart.id} cartName={cart.name} />
+
           {/* Interactive Rating & Review Form */}
           <CartRatingForm
             cartName={cart.name}
@@ -119,3 +133,4 @@ export default function CartDetailPage() {
     </>
   );
 }
+

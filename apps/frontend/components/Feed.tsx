@@ -1,15 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import StreetFoodCard from './StreetFoodCard';
-import { MOCK_CARTS } from '../lib/mockData';
+import { MOCK_CARTS, StreetFoodCart } from '../lib/mockData';
+import { fetchStreetFoodCarts } from '../lib/supabase/adapters';
 import { useFilterStore } from '../store';
 import { AnimatePresence } from 'framer-motion';
 
 export default function Feed() {
   const { activeCategory, searchQuery } = useFilterStore();
+  const [carts, setCarts] = useState<StreetFoodCart[]>(MOCK_CARTS);
 
-  const filteredCarts = MOCK_CARTS.filter((cart) => {
+  useEffect(() => {
+    async function loadCarts() {
+      const data = await fetchStreetFoodCarts();
+      setCarts(data);
+    }
+    loadCarts();
+  }, []);
+
+  const filteredCarts = carts.filter((cart) => {
     const matchesCategory = activeCategory === 'all' || cart.category.toLowerCase() === activeCategory.toLowerCase();
     const matchesSearch = cart.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (cart.specialty && cart.specialty.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -48,3 +58,4 @@ export default function Feed() {
     </section>
   );
 }
+
