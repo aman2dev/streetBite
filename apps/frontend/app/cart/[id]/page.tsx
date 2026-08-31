@@ -55,50 +55,15 @@ export default function CartDetailPage() {
       <main className="w-full pt-8 md:pt-28 lg:pt-36 min-h-screen bg-surface pb-24">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col gap-8">
           
-          {/* Back Navigation & Action Bar */}
+          {/* Top Navigation Bar - Back Button Only */}
           <div className="flex items-center justify-between gap-4">
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border-2 border-on-surface rounded-full font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-primary-container transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border-2 border-on-surface rounded-full font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-primary-container transition-colors cursor-pointer"
             >
               <ArrowLeft size={20} />
-              <span className="hidden sm:inline">Back</span>
+              <span>Back</span>
             </button>
-
-            <div className="flex items-center gap-3">
-              {/* Dedicated Rate Cart Button */}
-              <button
-                onClick={() => router.push(`/cart/${cart.id}/rate`)}
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary border-2 border-on-surface rounded-full font-black shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-amber-400 transition-colors uppercase text-xs tracking-wider cursor-pointer"
-              >
-                <Star size={18} className="fill-current" />
-                <span>Rate Cart</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({
-                      title: cart.name,
-                      text: `Check out ${cart.name} on StreetBite!`,
-                      url: window.location.href,
-                    }).catch(() => {});
-                  }
-                }}
-                className="p-3 bg-surface-container-lowest border-2 border-on-surface rounded-full font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-surface-variant transition-colors cursor-pointer"
-                title="Share Cart"
-              >
-                <Share2 size={20} />
-              </button>
-
-              <button
-                onClick={() => toggleSaved(cart.id)}
-                className="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border-2 border-on-surface rounded-full font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-surface-variant transition-colors cursor-pointer"
-              >
-                <Heart size={20} className={clsx(isSaved && "fill-error text-error")} />
-                <span>{isSaved ? 'Saved' : 'Save'}</span>
-              </button>
-            </div>
           </div>
 
           {/* Hero Banner & Gallery + Info Grid */}
@@ -110,7 +75,45 @@ export default function CartDetailPage() {
           {/* Menu Section */}
           <CartMenu menu={cart.menu} />
 
-          {/* Community Reviews List with Rate Button */}
+          {/* Action Bar (Rate Cart, Share & Save Buttons positioned after Menu for mobile view optimization) */}
+          <div className="bg-surface-container-lowest p-4 sm:p-6 rounded-3xl border-2 border-on-surface shadow-[6px_6px_0px_0px_#1a1c1c] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <button
+              onClick={() => router.push(`/cart/${cart.id}/rate`)}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary border-2 border-on-surface rounded-2xl font-black shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-amber-400 transition-transform active:translate-x-0.5 active:translate-y-0.5 uppercase text-xs sm:text-sm tracking-wider cursor-pointer"
+            >
+              <Star size={18} className="fill-current" />
+              <span>Rate Cart</span>
+            </button>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: cart.name,
+                      text: `Check out ${cart.name} on StreetBite!`,
+                      url: window.location.href,
+                    }).catch(() => {});
+                  }
+                }}
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3.5 bg-surface-container border-2 border-on-surface rounded-2xl font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-surface-variant transition-colors cursor-pointer text-xs sm:text-sm"
+                title="Share Cart"
+              >
+                <Share2 size={18} />
+                <span>Share</span>
+              </button>
+
+              <button
+                onClick={() => toggleSaved(cart.id)}
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3.5 bg-surface-container border-2 border-on-surface rounded-2xl font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-surface-variant transition-colors cursor-pointer text-xs sm:text-sm"
+              >
+                <Heart size={18} className={clsx(isSaved && "fill-error text-error")} />
+                <span>{isSaved ? 'Saved' : 'Save Cart'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Community Reviews List */}
           <CartReviewsList reviews={reviewsList} cartName={cart.name} cartId={cart.id} />
 
         </div>
