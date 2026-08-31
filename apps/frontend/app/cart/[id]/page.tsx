@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { MOCK_CARTS, Review, StreetFoodCart } from '../../../lib/mockData';
-import { fetchCartById, insertReview } from '../../../lib/supabase/adapters';
+import { fetchCartById } from '../../../lib/supabase/adapters';
 import Header from '../../../components/NavBar';
 import Footer from '../../../components/Footer';
 import BottomNav from '../../../components/BottomNav';
@@ -11,11 +11,10 @@ import {
   CartGallery, 
   CartHeaderInfo, 
   CartMenu, 
-  CartRatingForm, 
   CartReviewsList,
   CartChat
 } from '../../../components/cartInfo';
-import { Heart, ArrowLeft, Share2 } from 'lucide-react';
+import { Heart, ArrowLeft, Share2, Star } from 'lucide-react';
 import { useSavedStore } from '../../../store';
 import clsx from 'clsx';
 
@@ -45,15 +44,6 @@ export default function CartDetailPage() {
   const { savedCartIds, toggleSaved } = useSavedStore();
   const isSaved = savedCartIds.includes(cart.id);
 
-  const handleAddReview = async (newReview: Review) => {
-    setReviewsList((prev) => [newReview, ...prev]);
-    try {
-      await insertReview(cart.id, newReview.rating, newReview.comment);
-    } catch (err) {
-      console.warn('Note: Review saved locally. Supabase write requires auth user or anon insert policy:', err);
-    }
-  };
-
   // Calculated rating average
   const totalRatingPoints = reviewsList.reduce((acc, curr) => acc + curr.rating, 0);
   const currentRatingAvg = reviewsList.length > 0 
@@ -77,6 +67,15 @@ export default function CartDetailPage() {
             </button>
 
             <div className="flex items-center gap-3">
+              {/* Dedicated Rate Cart Button */}
+              <button
+                onClick={() => router.push(`/cart/${cart.id}/rate`)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary border-2 border-on-surface rounded-full font-black shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-amber-400 transition-colors uppercase text-xs tracking-wider"
+              >
+                <Star size={18} className="fill-current" />
+                <span>Rate Cart</span>
+              </button>
+
               <button
                 onClick={() => {
                   if (navigator.share) {
@@ -115,16 +114,8 @@ export default function CartDetailPage() {
           {/* Realtime Cart Chat */}
           <CartChat cartId={cart.id} cartName={cart.name} />
 
-          {/* Interactive Rating & Review Form */}
-          <CartRatingForm
-            cartName={cart.name}
-            currentRatingAvg={currentRatingAvg}
-            reviewsCount={reviewsList.length}
-            onAddReview={handleAddReview}
-          />
-
-          {/* Community Reviews List */}
-          <CartReviewsList reviews={reviewsList} cartName={cart.name} />
+          {/* Community Reviews List with Rate Button */}
+          <CartReviewsList reviews={reviewsList} cartName={cart.name} cartId={cart.id} />
 
         </div>
       </main>
@@ -133,4 +124,3 @@ export default function CartDetailPage() {
     </>
   );
 }
-

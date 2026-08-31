@@ -5,6 +5,11 @@ export interface Review {
   rating: number;
   date: string;
   comment: string;
+  cleanliness?: number;
+  ownerBehavior?: number;
+  foodQuality?: number;
+  foodQuantity?: number;
+  valueForMoney?: number;
 }
 
 export interface StreetFoodCart {
