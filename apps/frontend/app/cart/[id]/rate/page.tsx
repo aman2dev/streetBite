@@ -14,7 +14,6 @@ interface RatingCriteria {
   label: string;
   key: 'cleanliness' | 'ownerBehavior' | 'foodQuality' | 'foodQuantity' | 'valueForMoney';
   description: string;
-  icon: string;
 }
 
 const CRITERIA_LIST: RatingCriteria[] = [
@@ -22,31 +21,26 @@ const CRITERIA_LIST: RatingCriteria[] = [
     label: 'Cleanliness & Hygiene',
     key: 'cleanliness',
     description: 'Cart cleanliness, food handling & sanitation',
-    icon: '🧼',
   },
   {
     label: 'Owner Behavior & Service',
     key: 'ownerBehavior',
     description: 'Friendliness, warmth & hospitality',
-    icon: '😊',
   },
   {
     label: 'Food Quality & Taste',
     key: 'foodQuality',
     description: 'Freshness, taste & authenticity',
-    icon: '🍲',
   },
   {
     label: 'Food Quantity & Portion',
     key: 'foodQuantity',
     description: 'Portion size & serving adequacy',
-    icon: '🍱',
   },
   {
     label: 'Value for Money',
     key: 'valueForMoney',
     description: 'Price satisfaction for the quality served',
-    icon: '💰',
   },
 ];
 
@@ -145,7 +139,7 @@ export default function RateCartPage() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 flex flex-col gap-6">
           
           {/* Top Bar Navigation */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between w-full">
             <button
               onClick={() => router.back()}
               className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-full font-bold text-sm shadow-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
@@ -159,7 +153,7 @@ export default function RateCartPage() {
           </div>
 
           {/* Header Info Card */}
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm flex items-center gap-4">
+          <div className="w-full bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm flex items-center gap-4">
             <img
               src={cart.image}
               alt={cart.name}
@@ -180,16 +174,16 @@ export default function RateCartPage() {
 
           {!user ? (
             /* Auth Guard View - Login Required */
-            <div className="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl shadow-sm text-center flex flex-col items-center gap-5">
-              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-950/60 text-amber-600 rounded-2xl flex items-center justify-center">
+            <div className="w-full bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl shadow-sm text-center flex flex-col items-center gap-6">
+              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-950/60 text-amber-600 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <Lock size={32} />
               </div>
 
-              <div>
-                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <div className="w-full flex flex-col items-center justify-center">
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2 text-center" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                   Sign In Required to Review
                 </h2>
-                <p className="text-sm font-medium text-slate-500 max-w-sm">
+                <p className="text-sm font-medium text-slate-500 w-fit leading-relaxed">
                   Only authenticated Google users can submit ratings & reviews to keep reviews authentic and verified.
                 </p>
               </div>
@@ -197,7 +191,7 @@ export default function RateCartPage() {
               <button
                 onClick={() => signInWithGoogle()}
                 disabled={loading}
-                className="w-full max-w-xs py-4 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-2xl shadow-sm uppercase tracking-wider flex items-center justify-center gap-3 transition-transform active:scale-[0.99] text-sm cursor-pointer"
+                className="w-full sm:w-auto px-8 py-4 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-2xl shadow-sm uppercase tracking-wider flex items-center justify-center gap-3 transition-transform active:scale-[0.99] text-sm cursor-pointer whitespace-nowrap"
               >
                 {/* Google G Logo SVG */}
                 <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
@@ -206,13 +200,13 @@ export default function RateCartPage() {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                 </svg>
-                <span>Sign In with Google</span>
+                <span className="whitespace-nowrap font-black">Sign In with Google</span>
               </button>
             </div>
           ) : submittedSuccess ? (
             /* Success Feedback View */
-            <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm text-center flex flex-col items-center gap-4 animate-in fade-in">
-              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 rounded-full flex items-center justify-center">
+            <div className="w-full bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm text-center flex flex-col items-center gap-4 animate-in fade-in">
+              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
                 <CheckCircle2 size={36} />
               </div>
               <h2 className="text-2xl font-black text-slate-900 dark:text-white">
@@ -223,8 +217,8 @@ export default function RateCartPage() {
               </p>
             </div>
           ) : (
-            /* Simple Clean Rating Form (Stars Blank Initially) */
-            <form onSubmit={handleSubmitReview} className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6">
+            /* Simple Clean Rating Form */
+            <form onSubmit={handleSubmitReview} className="w-full bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl shadow-sm space-y-6">
               
               {/* Authenticated User Identity Pill */}
               <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex items-center gap-3">
@@ -275,12 +269,9 @@ export default function RateCartPage() {
                   return (
                     <div key={item.key} className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl space-y-2">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">{item.icon}</span>
-                          <span className="text-sm font-bold text-slate-900 dark:text-white">
-                            {item.label}
-                          </span>
-                        </div>
+                        <span className="text-sm font-bold text-slate-900 dark:text-white">
+                          {item.label}
+                        </span>
                         <span className={`text-xs font-extrabold ${currentVal > 0 ? 'text-amber-500' : 'text-slate-400'}`}>
                           {currentVal > 0 ? `${currentVal} / 5 Stars` : 'Unrated'}
                         </span>

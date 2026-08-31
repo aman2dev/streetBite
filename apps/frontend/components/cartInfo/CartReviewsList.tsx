@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Star, PlusCircle } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Review } from '../../lib/mockData';
 import { useRouter } from 'next/navigation';
 
@@ -22,7 +22,7 @@ export default function CartReviewsList({ reviews, cartName, cartId }: CartRevie
             className="text-2xl sm:text-3xl text-on-surface font-extrabold"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            💬 Community Reviews ({reviews.length})
+            Community Reviews ({reviews.length})
           </h2>
           <p className="text-xs text-on-surface-variant font-medium mt-0.5">
             Real ratings from verified street food lovers
@@ -50,7 +50,7 @@ export default function CartReviewsList({ reviews, cartName, cartId }: CartRevie
               onClick={() => router.push(`/cart/${cartId}/rate`)}
               className="bg-primary text-on-primary px-5 py-2 rounded-xl font-extrabold border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] text-xs uppercase"
             >
-              ⭐ Rate {cartName} Now
+              Rate {cartName} Now
             </button>
           )}
         </div>
@@ -86,32 +86,32 @@ export default function CartReviewsList({ reviews, cartName, cartId }: CartRevie
                 </div>
               </div>
 
-              {/* Review Criteria Chips (If available) */}
+              {/* Review Criteria Chips (Clean typography without extra icons) */}
               {(rev.cleanliness || rev.foodQuality || rev.ownerBehavior || rev.foodQuantity || rev.valueForMoney) && (
                 <div className="flex flex-wrap gap-2 pt-1">
                   {rev.cleanliness && (
                     <span className="px-2.5 py-0.5 bg-surface-container rounded-lg text-[11px] font-bold text-on-surface-variant border border-on-surface/20">
-                      🧼 Hygiene: {rev.cleanliness}/5 ⭐
+                      Hygiene: {rev.cleanliness}/5
                     </span>
                   )}
                   {rev.ownerBehavior && (
                     <span className="px-2.5 py-0.5 bg-surface-container rounded-lg text-[11px] font-bold text-on-surface-variant border border-on-surface/20">
-                      😊 Service: {rev.ownerBehavior}/5 ⭐
+                      Service: {rev.ownerBehavior}/5
                     </span>
                   )}
                   {rev.foodQuality && (
                     <span className="px-2.5 py-0.5 bg-surface-container rounded-lg text-[11px] font-bold text-on-surface-variant border border-on-surface/20">
-                      🍲 Quality: {rev.foodQuality}/5 ⭐
+                      Quality: {rev.foodQuality}/5
                     </span>
                   )}
                   {rev.foodQuantity && (
                     <span className="px-2.5 py-0.5 bg-surface-container rounded-lg text-[11px] font-bold text-on-surface-variant border border-on-surface/20">
-                      🍱 Quantity: {rev.foodQuantity}/5 ⭐
+                      Quantity: {rev.foodQuantity}/5
                     </span>
                   )}
                   {rev.valueForMoney && (
                     <span className="px-2.5 py-0.5 bg-surface-container rounded-lg text-[11px] font-bold text-on-surface-variant border border-on-surface/20">
-                      💰 Value: {rev.valueForMoney}/5 ⭐
+                      Value: {rev.valueForMoney}/5
                     </span>
                   )}
                 </div>
