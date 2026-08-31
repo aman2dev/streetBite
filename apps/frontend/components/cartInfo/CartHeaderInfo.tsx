@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Clock, Calendar, MapPin, Utensils, Phone, ExternalLink, Navigation } from 'lucide-react';
+import { Clock, Calendar, MapPin, Utensils, ExternalLink, Navigation } from 'lucide-react';
 import { StreetFoodCart } from '../../lib/mockData';
 
 interface CartHeaderInfoProps {
@@ -97,23 +97,15 @@ export default function CartHeaderInfo({ cart }: CartHeaderInfoProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3 mt-2">
-        <a
-          href={`tel:${cart.phone || '+919876543210'}`}
-          className="flex-1 bg-surface-container hover:bg-surface-variant text-on-surface font-extrabold py-3 px-6 rounded-2xl border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] uppercase tracking-wider flex items-center justify-center gap-2 transition-transform active:translate-x-0.5 active:translate-y-0.5"
-        >
-          <Phone size={18} />
-          <span>Call Cart</span>
-        </a>
-
+      <div className="flex gap-3 mt-2">
         <a
           href={mapLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-primary hover:bg-amber-400 text-on-primary font-extrabold py-3 px-6 rounded-2xl border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] uppercase tracking-wider flex items-center justify-center gap-2 transition-transform active:translate-x-0.5 active:translate-y-0.5"
+          className="w-full bg-primary hover:bg-amber-400 text-on-primary font-extrabold py-3.5 px-6 rounded-2xl border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] uppercase tracking-wider flex items-center justify-center gap-2 transition-transform active:translate-x-0.5 active:translate-y-0.5"
         >
           <Navigation size={18} />
-          <span>Google Maps</span>
+          <span>Open Google Maps</span>
           <ExternalLink size={14} className="opacity-80" />
         </a>
       </div>

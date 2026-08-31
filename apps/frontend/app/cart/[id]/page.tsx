@@ -11,8 +11,7 @@ import {
   CartGallery, 
   CartHeaderInfo, 
   CartMenu, 
-  CartReviewsList,
-  CartChat
+  CartReviewsList
 } from '../../../components/cartInfo';
 import { Heart, ArrowLeft, Share2, Star } from 'lucide-react';
 import { useSavedStore } from '../../../store';
@@ -70,7 +69,7 @@ export default function CartDetailPage() {
               {/* Dedicated Rate Cart Button */}
               <button
                 onClick={() => router.push(`/cart/${cart.id}/rate`)}
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary border-2 border-on-surface rounded-full font-black shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-amber-400 transition-colors uppercase text-xs tracking-wider"
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary border-2 border-on-surface rounded-full font-black shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-amber-400 transition-colors uppercase text-xs tracking-wider cursor-pointer"
               >
                 <Star size={18} className="fill-current" />
                 <span>Rate Cart</span>
@@ -86,7 +85,7 @@ export default function CartDetailPage() {
                     }).catch(() => {});
                   }
                 }}
-                className="p-3 bg-surface-container-lowest border-2 border-on-surface rounded-full font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-surface-variant transition-colors"
+                className="p-3 bg-surface-container-lowest border-2 border-on-surface rounded-full font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-surface-variant transition-colors cursor-pointer"
                 title="Share Cart"
               >
                 <Share2 size={20} />
@@ -94,7 +93,7 @@ export default function CartDetailPage() {
 
               <button
                 onClick={() => toggleSaved(cart.id)}
-                className="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border-2 border-on-surface rounded-full font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-surface-variant transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border-2 border-on-surface rounded-full font-bold shadow-[4px_4px_0px_0px_#1a1c1c] hover:bg-surface-variant transition-colors cursor-pointer"
               >
                 <Heart size={20} className={clsx(isSaved && "fill-error text-error")} />
                 <span>{isSaved ? 'Saved' : 'Save'}</span>
@@ -110,9 +109,6 @@ export default function CartDetailPage() {
 
           {/* Menu Section */}
           <CartMenu menu={cart.menu} />
-
-          {/* Realtime Cart Chat */}
-          <CartChat cartId={cart.id} cartName={cart.name} />
 
           {/* Community Reviews List with Rate Button */}
           <CartReviewsList reviews={reviewsList} cartName={cart.name} cartId={cart.id} />
