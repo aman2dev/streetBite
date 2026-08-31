@@ -135,7 +135,7 @@ export default function RateCartPage() {
   return (
     <>
       <Header />
-      <main className="w-full pt-28 lg:pt-36 min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
+      <main className="w-full pt-8 md:pt-28 lg:pt-36 min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 flex flex-col gap-6">
           
           {/* Top Bar Navigation */}
@@ -210,7 +210,7 @@ export default function RateCartPage() {
                 <CheckCircle2 size={36} />
               </div>
               <h2 className="text-2xl font-black text-slate-900 dark:text-white">
-                Thank You for Your Feedback! 🎉
+                Thank You for Your Feedback! 
               </h2>
               <p className="text-sm font-medium text-slate-500 max-w-md">
                 Your rating of <span className="font-bold text-amber-500">{overallCalculatedRating} ⭐</span> for {cart.name} has been published successfully.

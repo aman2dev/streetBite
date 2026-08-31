@@ -52,7 +52,7 @@ export default function CartDetailPage() {
   return (
     <>
       <Header />
-      <main className="w-full pt-28 lg:pt-36 min-h-screen bg-surface pb-24">
+      <main className="w-full pt-8 md:pt-28 lg:pt-36 min-h-screen bg-surface pb-24">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col gap-8">
           
           {/* Back Navigation & Action Bar */}

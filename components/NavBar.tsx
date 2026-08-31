@@ -18,7 +18,7 @@ export default function Header() {
   return (
     <header className={clsx(
       "fixed top-4 left-0 right-0 max-w-7xl mx-auto w-[calc(100%-2rem)] z-50 bg-surface/90 backdrop-blur-xl shadow-[4px_4px_0px_0px_#1a1c1c] border-2 border-on-surface rounded-full transition-all",
-      !isHomePage && "hidden md:block" // Hide navbar on mobile view for non-homepage routes
+      !isHomePage && "hidden md:block" // Hide navbar on mobile view on all non-homepage pages
     )}>
       <div className="h-20 w-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
         
@@ -44,11 +44,11 @@ export default function Header() {
             Saved
           </Link>
 
-          {/* Admin Navigation Button (Visible ONLY on desktop md:flex) */}
+          {/* Admin Navigation Button (Visible ONLY when user is logged in & has ADMIN role) */}
           {user && isAdmin && (
             <Link
               href="/admin"
-              className="hidden md:flex px-3.5 py-1.5 bg-primary text-on-primary rounded-full text-xs uppercase tracking-wider font-black border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] hover:-translate-y-0.5 transition-transform items-center gap-1.5 animate-in fade-in"
+              className="px-3.5 py-1.5 bg-primary text-on-primary rounded-full text-xs uppercase tracking-wider font-black border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] hover:-translate-y-0.5 transition-transform flex items-center gap-1.5 animate-in fade-in"
               title="Admin Dashboard"
             >
               <Store size={14} />
@@ -56,8 +56,8 @@ export default function Header() {
             </Link>
           )}
 
-          {/* User Auth Section (Hidden on mobile screens: hidden md:flex) */}
-          <div className="relative hidden md:flex items-center pl-3 border-l-2 border-on-surface">
+          {/* User Auth Section */}
+          <div className="relative flex items-center pl-3 border-l-2 border-on-surface">
             {user ? (
               <div className="relative">
                 <button
@@ -144,7 +144,7 @@ export default function Header() {
               <button
                 onClick={() => signInWithGoogle(true)}
                 disabled={loading}
-                className="hidden md:flex px-4 py-2 bg-white hover:bg-slate-50 text-slate-900 font-extrabold rounded-full border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] text-xs uppercase tracking-wider items-center gap-2 hover:-translate-y-0.5 transition-transform cursor-pointer disabled:opacity-60"
+                className="hidden sm:flex px-4 py-2 bg-white hover:bg-slate-50 text-slate-900 font-extrabold rounded-full border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] text-xs uppercase tracking-wider items-center gap-2 hover:-translate-y-0.5 transition-transform cursor-pointer disabled:opacity-60"
                 title="Sign in with Google Account"
               >
                 {/* Google G Logo SVG */}
