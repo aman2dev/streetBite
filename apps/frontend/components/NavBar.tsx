@@ -44,18 +44,6 @@ export default function Header() {
             Saved
           </Link>
 
-          {/* Admin Navigation Button (Visible ONLY on desktop md:flex) */}
-          {user && isAdmin && (
-            <Link
-              href="/admin"
-              className="hidden md:flex px-3.5 py-1.5 bg-primary text-on-primary rounded-full text-xs uppercase tracking-wider font-black border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] hover:-translate-y-0.5 transition-transform items-center gap-1.5 animate-in fade-in"
-              title="Admin Dashboard"
-            >
-              <Store size={14} />
-              <span>⚡ Admin</span>
-            </Link>
-          )}
-
           {/* User Auth Section (Hidden on mobile screens: hidden md:flex) */}
           <div className="relative hidden md:flex items-center pl-3 border-l-2 border-on-surface">
             {user ? (
