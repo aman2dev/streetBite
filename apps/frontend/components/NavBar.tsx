@@ -18,7 +18,7 @@ export default function Header() {
   return (
     <header className={clsx(
       "fixed top-4 left-0 right-0 max-w-7xl mx-auto w-[calc(100%-2rem)] z-50 bg-surface/90 backdrop-blur-xl shadow-[4px_4px_0px_0px_#1a1c1c] border-2 border-on-surface rounded-full transition-all",
-      !isHomePage && "hidden md:block" // Hide navbar on mobile view for non-homepage routes
+      !isHomePage && "hidden md:flex"
     )}>
       <div className="h-20 w-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
         

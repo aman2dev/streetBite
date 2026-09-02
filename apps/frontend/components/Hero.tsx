@@ -1,14 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Search } from 'lucide-react';
-import { useFilterStore } from '../store';
 
 export default function Hero() {
-  const router = useRouter();
-  const { searchQuery, setSearchQuery } = useFilterStore();
-
   return (
     <section className="relative w-full min-h-fit xl:min-h-[70vh] flex flex-col xl:flex-row items-center justify-between gap-8 mb-8 xl:mb-xl">
       {/* Floating Bold Box for Content */}
@@ -32,40 +28,14 @@ export default function Hero() {
           Find the best-rated carts and hidden gems near you.
         </p>
         
-        {/* Mobile & Tablet Find Food Button (sm & md screens) */}
-        <button
-          type="button"
-          onClick={() => router.push('/search')}
-          className="w-full bg-primary hover:bg-surface-tint text-on-primary rounded-full py-3.5 px-6 font-bold flex items-center justify-center gap-3 border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] uppercase tracking-wider text-base lg:hidden mb-8"
+        {/* Dedicated Find Food Navigation Button -> Navigates to /search */}
+        <Link 
+          href="/search"
+          className="w-full bg-primary hover:bg-amber-400 text-on-primary rounded-2xl sm:rounded-full py-4 px-8 font-black flex items-center justify-center gap-3 border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] lg:shadow-[6px_6px_0px_0px_#1a1c1c] uppercase tracking-wider text-base sm:text-lg mb-8 transition-transform active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
         >
-          <Search size={22} />
+          <Search size={22} className="stroke-[3]" />
           <span>Find Food</span>
-        </button>
-
-        {/* Hero Search Input (Desktop Only) */}
-        <form 
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (searchQuery.trim()) {
-              router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-            } else {
-              router.push('/search');
-            }
-          }}
-          className="hidden lg:flex w-full relative shadow-[6px_6px_0px_0px_#1a1c1c] border-2 border-on-surface rounded-full bg-surface-container-lowest p-2 items-center mb-8"
-        >
-          <Search className="text-primary ml-md flex-shrink-0" size={24} />
-          <input 
-            className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-base lg:text-lg text-on-surface px-md py-sm placeholder-on-surface-variant/70 font-bold min-w-0" 
-            placeholder="Craving Litti Chokha, momos, or chaat?" 
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="submit" className="bg-primary hover:bg-surface-tint text-on-primary rounded-full px-6 lg:px-xl py-2 lg:py-md text-sm lg:text-base font-label-md uppercase tracking-wider transition-all duration-300 font-bold whitespace-nowrap flex-shrink-0">
-            Find Food
-          </button>
-        </form>
+        </Link>
 
         {/* Quick Stats */}
         <div className="flex flex-wrap items-center gap-6 mt-4">
