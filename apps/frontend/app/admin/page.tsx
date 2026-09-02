@@ -38,6 +38,8 @@ export default function AdminDashboardPage() {
   const [formAddress, setFormAddress] = useState('');
   const [formGoogleMapUrl, setFormGoogleMapUrl] = useState('');
   const [formDistance, setFormDistance] = useState('0.3 mi away');
+  const [formLatitude, setFormLatitude] = useState<number>(25.6112);
+  const [formLongitude, setFormLongitude] = useState<number>(85.1442);
 
   const [formTimings, setFormTimings] = useState('4:00 PM - 10:30 PM');
   const [formOperatingDays, setFormOperatingDays] = useState('Mon - Sat (6 days/week)');
@@ -80,6 +82,8 @@ export default function AdminDashboardPage() {
     setFormAddress('Dak Bungalow Road, Patna, Bihar');
     setFormGoogleMapUrl('');
     setFormDistance('0.3 mi away');
+    setFormLatitude(25.6112);
+    setFormLongitude(85.1442);
     setFormTimings('4:00 PM - 10:30 PM');
     setFormOperatingDays('Mon - Sat (6 days/week)');
     setFormActiveWeeks(52);
@@ -104,6 +108,8 @@ export default function AdminDashboardPage() {
     setFormAddress(cart.address || '');
     setFormGoogleMapUrl(cart.googleMapUrl || '');
     setFormDistance(cart.distance || '0.3 mi away');
+    setFormLatitude((cart as any).latitude || 25.6112);
+    setFormLongitude((cart as any).longitude || 85.1442);
     setFormTimings(cart.timings || '4:00 PM - 10:30 PM');
     setFormOperatingDays(cart.operatingDays || 'Mon - Sat');
     setFormActiveWeeks(cart.activeWeeks || 52);
@@ -186,6 +192,8 @@ export default function AdminDashboardPage() {
       address: formAddress.trim() || 'Patna, Bihar',
       googleMapUrl: formGoogleMapUrl.trim() || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formName + ' ' + formAddress)}`,
       distance: formDistance,
+      latitude: formLatitude,
+      longitude: formLongitude,
       timings: formTimings,
       operatingDays: formOperatingDays,
       activeWeeks: formActiveWeeks,
@@ -314,6 +322,10 @@ export default function AdminDashboardPage() {
         setFormGoogleMapUrl={setFormGoogleMapUrl}
         formDistance={formDistance}
         setFormDistance={setFormDistance}
+        formLatitude={formLatitude}
+        setFormLatitude={setFormLatitude}
+        formLongitude={formLongitude}
+        setFormLongitude={setFormLongitude}
         formActiveWeeks={formActiveWeeks}
         setFormActiveWeeks={setFormActiveWeeks}
         formTimings={formTimings}

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Map, Heart, User } from 'lucide-react';
+import { Home, MapPin, Heart, User } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function BottomNav() {
@@ -11,7 +11,7 @@ export default function BottomNav() {
 
   const navItems = [
     { icon: Home, label: 'Home', href: '/' },
-    { icon: Map, label: 'Map View', href: '/explore' },
+    { icon: MapPin, label: 'Near Me', href: '/near-me' },
     { icon: Heart, label: 'Saved', href: '/saved' },
     { icon: User, label: 'Profile', href: '/profile' },
   ];
