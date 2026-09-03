@@ -61,6 +61,32 @@ function getDeletedCartIds(): string[] {
   }
 }
 
+function parseLocationCoordinates(loc: any): { latitude: number; longitude: number } {
+  const defaultCoords = { latitude: 25.6112, longitude: 85.1442 };
+  if (!loc) return defaultCoords;
+
+  if (typeof loc === 'string') {
+    const match = loc.match(/POINT\s*\(\s*([-\d.]+)\s+([-\d.]+)\s*\)/i);
+    if (match && match[1] && match[2]) {
+      const lng = parseFloat(match[1]);
+      const lat = parseFloat(match[2]);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        return { latitude: lat, longitude: lng };
+      }
+    }
+  } else if (typeof loc === 'object' && loc !== null) {
+    if (Array.isArray((loc as any).coordinates) && (loc as any).coordinates.length >= 2) {
+      const lng = parseFloat((loc as any).coordinates[0]);
+      const lat = parseFloat((loc as any).coordinates[1]);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        return { latitude: lat, longitude: lng };
+      }
+    }
+  }
+
+  return defaultCoords;
+}
+
 /**
  * Maps a Supabase Cart Row (and optionally its reviews/profiles) to the UI's StreetFoodCart interface.
  */
@@ -68,17 +94,36 @@ export function mapSupabaseCartToUi(
   cart: CartRow,
   reviews: (ReviewRow & { profiles?: ProfileRow | null })[] = []
 ): StreetFoodCart {
-  const formattedReviews: Review[] = reviews.map((r) => ({
-    id: r.id,
-    user: r.profiles?.username || 'StreetBite Foodie',
-    avatar: r.profiles?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${r.user_id}`,
-    rating: r.rating || 5,
-    date: new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    comment: r.comment || '',
-  }));
+  const allReviewsMap = new Map<string, Review>();
+  const topLevelReviews: Review[] = [];
 
-  const totalRating = formattedReviews.reduce((sum, r) => sum + r.rating, 0);
-  const avgRating = formattedReviews.length > 0 ? parseFloat((totalRating / formattedReviews.length).toFixed(1)) : 4.8;
+  reviews.forEach((r) => {
+    const revObj: Review = {
+      id: r.id,
+      user: r.profiles?.username || 'StreetBite Foodie',
+      avatar: r.profiles?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${r.user_id}`,
+      rating: r.rating || 5,
+      date: new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      comment: r.comment || '',
+      parentReviewId: r.parent_review_id || null,
+      replies: [],
+    };
+    allReviewsMap.set(r.id, revObj);
+  });
+
+  allReviewsMap.forEach((rev) => {
+    if (rev.parentReviewId && allReviewsMap.has(rev.parentReviewId)) {
+      const parent = allReviewsMap.get(rev.parentReviewId)!;
+      parent.replies = parent.replies || [];
+      parent.replies.push(rev);
+    } else {
+      topLevelReviews.push(rev);
+    }
+  });
+
+  const totalRating = reviews.reduce((sum, r) => sum + (r.rating || 5), 0);
+  const avgRating = reviews.length > 0 ? parseFloat((totalRating / reviews.length).toFixed(1)) : 4.8;
+  const { latitude, longitude } = parseLocationCoordinates(cart.location);
 
   const parsedMenu = Array.isArray(cart.menu)
     ? (cart.menu as unknown as { name: string; price: string; isVeg?: boolean }[])
@@ -101,9 +146,11 @@ export function mapSupabaseCartToUi(
     googleMapUrl: cart.google_map_url || undefined,
     phone: cart.phone || '+91 98765 43210',
     description: cart.description || 'Authentic street food cooked fresh with traditional spices and recipes.',
-    reviewsCount: formattedReviews.length,
-    reviews: formattedReviews,
+    reviewsCount: reviews.length,
+    reviews: topLevelReviews,
     menu: parsedMenu,
+    latitude,
+    longitude,
   };
 }
 
@@ -209,6 +256,9 @@ export async function fetchCartById(id: string): Promise<StreetFoodCart | undefi
  */
 export async function createCart(cartData: Omit<StreetFoodCart, 'id' | 'rating' | 'reviewsCount'> & { id?: string }): Promise<StreetFoodCart> {
   const generatedId = cartData.id || `cart-${Date.now()}`;
+  const lat = cartData.latitude ?? 25.6112;
+  const lng = cartData.longitude ?? 85.1442;
+
   const newCart: StreetFoodCart = {
     id: generatedId,
     name: cartData.name,
@@ -229,6 +279,8 @@ export async function createCart(cartData: Omit<StreetFoodCart, 'id' | 'rating' 
     description: cartData.description || 'Fresh street food delight.',
     menu: cartData.menu || [],
     reviews: [],
+    latitude: lat,
+    longitude: lng,
   };
 
   // 1. Save locally for instant persistence & offline support
@@ -242,7 +294,7 @@ export async function createCart(cartData: Omit<StreetFoodCart, 'id' | 'rating' 
       name: newCart.name,
       specialty_item: newCart.specialty || '',
       image_url: newCart.image,
-      location: 'POINT(85.1376 25.5941)',
+      location: `POINT(${lng} ${lat})` as any,
       category: newCart.category,
       address: newCart.address,
       google_map_url: newCart.googleMapUrl,
@@ -285,24 +337,30 @@ export async function updateCart(id: string, cartData: Partial<StreetFoodCart>):
 
   try {
     const supabase = createClient();
+    const updatePayload: any = {
+      name: updatedCart.name,
+      specialty_item: updatedCart.specialty,
+      image_url: updatedCart.image,
+      category: updatedCart.category,
+      address: updatedCart.address,
+      google_map_url: updatedCart.googleMapUrl,
+      timings: updatedCart.timings,
+      operating_days: updatedCart.operatingDays,
+      phone: updatedCart.phone,
+      description: updatedCart.description,
+      active_weeks: updatedCart.activeWeeks,
+      is_open: updatedCart.isOpen,
+      images: updatedCart.images,
+      menu: updatedCart.menu as any,
+    };
+
+    if (updatedCart.longitude !== undefined && updatedCart.latitude !== undefined) {
+      updatePayload.location = `POINT(${updatedCart.longitude} ${updatedCart.latitude})`;
+    }
+
     await supabase
       .from('carts')
-      .update({
-        name: updatedCart.name,
-        specialty_item: updatedCart.specialty,
-        image_url: updatedCart.image,
-        category: updatedCart.category,
-        address: updatedCart.address,
-        google_map_url: updatedCart.googleMapUrl,
-        timings: updatedCart.timings,
-        operating_days: updatedCart.operatingDays,
-        phone: updatedCart.phone,
-        description: updatedCart.description,
-        active_weeks: updatedCart.activeWeeks,
-        is_open: updatedCart.isOpen,
-        images: updatedCart.images,
-        menu: updatedCart.menu as any,
-      })
+      .update(updatePayload)
       .eq('id', id);
   } catch (e) {
     console.warn('Supabase update cart attempt failed (operating in fallback local state):', e);
@@ -327,28 +385,41 @@ export async function deleteCart(id: string): Promise<boolean> {
   return true;
 }
 
-/**
- * Inserts a new review into Supabase reviews table.
- */
-export async function insertReview(cartId: string, rating: number, comment: string, userId?: string) {
-  const supabase = createClient();
-  const targetUserId = userId || (await supabase.auth.getUser()).data.user?.id;
+export async function insertReview(
+  cartId: string,
+  rating: number,
+  comment: string,
+  userId?: string,
+  parentReviewId?: string | null
+) {
+  try {
+    const supabase = createClient();
+    const targetUserId = userId || (await supabase.auth.getUser()).data.user?.id;
 
-  if (!targetUserId) {
-    throw new Error('Authenticated user required to post review.');
+    if (!targetUserId) {
+      console.warn('Authenticated user required to post review.');
+      return null;
+    }
+
+    const { data, error } = await supabase
+      .from('reviews')
+      .insert({
+        cart_id: cartId,
+        user_id: targetUserId,
+        rating,
+        comment,
+        parent_review_id: parentReviewId || null,
+      })
+      .select('*, profiles(*)')
+      .single();
+
+    if (error) {
+      console.warn('Supabase insert review error (operating in local fallback state):', error);
+      return null;
+    }
+    return data;
+  } catch (err) {
+    console.warn('Failed to insert review to Supabase:', err);
+    return null;
   }
-
-  const { data, error } = await supabase
-    .from('reviews')
-    .insert({
-      cart_id: cartId,
-      user_id: targetUserId,
-      rating,
-      comment,
-    })
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
 }

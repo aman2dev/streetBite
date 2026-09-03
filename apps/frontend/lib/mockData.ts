@@ -5,6 +5,8 @@ export interface Review {
   rating: number;
   date: string;
   comment: string;
+  parentReviewId?: string | null;
+  replies?: Review[];
   cleanliness?: number;
   ownerBehavior?: number;
   foodQuality?: number;
@@ -32,6 +34,8 @@ export interface StreetFoodCart {
   reviewsCount?: number;
   menu?: { name: string; price: string; isVeg?: boolean }[];
   reviews?: Review[];
+  latitude?: number;
+  longitude?: number;
 }
 
 export const MOCK_CARTS: StreetFoodCart[] = [

@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Review } from '../../lib/mockData';
 import { useAuth } from '../../lib/useAuth';
+import { insertReview } from '../../lib/supabase/adapters';
 import { ThumbsUp, ChevronDown, ChevronUp } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -23,7 +24,7 @@ interface CartReviewsListProps {
   cartId?: string;
 }
 
-export default function CartReviewsList({ reviews, cartName }: CartReviewsListProps) {
+export default function CartReviewsList({ reviews, cartName, cartId }: CartReviewsListProps) {
   const { user, signInWithGoogle } = useAuth();
   const [newCommentText, setNewCommentText] = useState('');
   const [replyingToId, setReplyingToId] = useState<string | null>(null);
@@ -48,7 +49,15 @@ export default function CartReviewsList({ reviews, cartName }: CartReviewsListPr
       content: rev.comment || 'Great taste and awesome service!',
       likes: Math.floor(Math.random() * 20) + 3,
       isLiked: false,
-      replies: index === 0 ? [
+      replies: rev.replies ? rev.replies.map((r, rIdx) => ({
+        id: r.id || `reply-${index}-${rIdx}`,
+        user: r.user || 'StreetFoodie',
+        avatar: r.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80',
+        date: r.date || '1h ago',
+        content: r.comment || '',
+        likes: Math.floor(Math.random() * 10) + 1,
+        isLiked: false,
+      })) : (index === 0 ? [
         {
           id: `reply-${index}-1`,
           user: 'Priya Sharma',
@@ -58,9 +67,34 @@ export default function CartReviewsList({ reviews, cartName }: CartReviewsListPr
           likes: 6,
           isLiked: false,
         }
-      ] : []
+      ] : [])
     }));
   });
+
+  useEffect(() => {
+    if (reviews && reviews.length > 0) {
+      setComments(
+        reviews.map((rev, index) => ({
+          id: rev.id || `comment-${index}`,
+          user: rev.user || 'StreetFoodie',
+          avatar: rev.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${index}`,
+          date: rev.date || 'Recently',
+          content: rev.comment || '',
+          likes: Math.floor(Math.random() * 15) + 2,
+          isLiked: false,
+          replies: rev.replies ? rev.replies.map((r, rIdx) => ({
+            id: r.id || `reply-${index}-${rIdx}`,
+            user: r.user || 'StreetFoodie',
+            avatar: r.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=reply-${rIdx}`,
+            date: r.date || 'Recently',
+            content: r.comment || '',
+            likes: Math.floor(Math.random() * 8) + 1,
+            isLiked: false,
+          })) : []
+        }))
+      );
+    }
+  }, [reviews]);
 
   const handleLike = (commentId: string, parentId?: string) => {
     setComments((prev) =>
@@ -89,7 +123,7 @@ export default function CartReviewsList({ reviews, cartName }: CartReviewsListPr
     );
   };
 
-  const handleAddComment = (e: React.FormEvent) => {
+  const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCommentText.trim()) return;
     if (!user) {
@@ -97,34 +131,52 @@ export default function CartReviewsList({ reviews, cartName }: CartReviewsListPr
       return;
     }
 
+    const textToInsert = newCommentText.trim();
+    setNewCommentText('');
+
+    const tempId = `comment-${Date.now()}`;
     const newCommentObj: CommentItem = {
-      id: `comment-${Date.now()}`,
+      id: tempId,
       user: user.name,
       avatar: user.avatar,
       date: 'Just now',
-      content: newCommentText.trim(),
+      content: textToInsert,
       likes: 1,
       isLiked: true,
       replies: [],
     };
 
-    setComments([newCommentObj, ...comments]);
-    setNewCommentText('');
+    setComments((prev) => [newCommentObj, ...prev]);
+
+    if (cartId) {
+      try {
+        const inserted = await insertReview(cartId, 5, textToInsert);
+        if (inserted && inserted.id) {
+          setComments((prev) =>
+            prev.map((c) => (c.id === tempId ? { ...c, id: inserted.id } : c))
+          );
+        }
+      } catch (err) {
+        console.warn('Failed to save comment to Supabase:', err);
+      }
+    }
   };
 
-  const handleAddReply = (parentCommentId: string) => {
+  const handleAddReply = async (parentCommentId: string) => {
     if (!replyText.trim()) return;
     if (!user) {
       signInWithGoogle(true);
       return;
     }
 
+    const textToInsert = replyText.trim();
+    const tempReplyId = `reply-${Date.now()}`;
     const newReplyObj: CommentItem = {
-      id: `reply-${Date.now()}`,
+      id: tempReplyId,
       user: user.name,
       avatar: user.avatar,
       date: 'Just now',
-      content: replyText.trim(),
+      content: textToInsert,
       likes: 1,
       isLiked: true,
     };
@@ -141,6 +193,27 @@ export default function CartReviewsList({ reviews, cartName }: CartReviewsListPr
     setExpandedThreads((prev) => ({ ...prev, [parentCommentId]: true }));
     setReplyText('');
     setReplyingToId(null);
+
+    if (cartId) {
+      try {
+        const inserted = await insertReview(cartId, 5, textToInsert, undefined, parentCommentId);
+        if (inserted && inserted.id) {
+          setComments((prev) =>
+            prev.map((c) => {
+              if (c.id !== parentCommentId) return c;
+              return {
+                ...c,
+                replies: c.replies?.map((r) =>
+                  r.id === tempReplyId ? { ...r, id: inserted.id } : r
+                ),
+              };
+            })
+          );
+        }
+      } catch (err) {
+        console.warn('Failed to save reply to Supabase:', err);
+      }
+    }
   };
 
   return (

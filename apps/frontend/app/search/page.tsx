@@ -65,7 +65,7 @@ function SearchContent() {
   });
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col pt-6 md:pt-32 pb-24 md:pb-20">
+    <div className="min-h-screen bg-surface flex flex-col pt-2 md:pt-4 pb-24 md:pb-20">
       <Header />
 
       <main className="max-w-7xl w-full mx-auto px-4 md:px-8 flex-1 flex flex-col">
