@@ -4,45 +4,57 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth, UserRole } from '../lib/useAuth';
-import { LogOut, ShieldCheck, UtensilsCrossed, Store, RefreshCw } from 'lucide-react';
+import { LogOut, ShieldCheck, UtensilsCrossed, Store, RefreshCw, Plus } from 'lucide-react';
 import clsx from 'clsx';
+import UserSubmitCartModal from './user/UserSubmitCartModal';
 
 export default function Header() {
   const pathname = usePathname();
   const { user, loading, signInWithGoogle, toggleUserRole, signOut } = useAuth();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
   const isAdmin = user?.role === UserRole.ADMIN;
   const isHomePage = pathname === '/';
 
   return (
-    <header className={clsx(
-      "relative my-4 max-w-7xl mx-auto w-[calc(100%-2rem)] z-50 bg-surface/90 backdrop-blur-xl shadow-[4px_4px_0px_0px_#1a1c1c] border-2 border-on-surface rounded-full transition-all",
-      !isHomePage && "hidden md:flex"
-    )}>
-      <div className="h-16 md:h-20 w-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
-        
-        {/* Brand Logo */}
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2.5 cursor-pointer group">
-            <div className="w-10 h-10 bg-primary text-on-primary rounded-xl border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] flex items-center justify-center font-black text-xl group-hover:scale-105 transition-transform">
-              <UtensilsCrossed size={20} className="stroke-[2.5]" />
-            </div>
-            <span className="text-2xl font-black text-on-surface tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Street<span className="text-primary">Bite</span>
-            </span>
-          </Link>
-        </div>
+    <>
+      <header className={clsx(
+        "relative my-4 max-w-7xl mx-auto w-[calc(100%-2rem)] z-50 bg-surface/90 backdrop-blur-xl shadow-[4px_4px_0px_0px_#1a1c1c] border-2 border-on-surface rounded-full transition-all",
+        !isHomePage && "hidden md:flex"
+      )}>
+        <div className="h-16 md:h-20 w-full px-4 sm:px-6 md:px-8 flex items-center justify-between">
+          
+          {/* Brand Logo */}
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2.5 cursor-pointer group">
+              <div className="w-10 h-10 bg-primary text-on-primary rounded-xl border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] flex items-center justify-center font-black text-xl group-hover:scale-105 transition-transform">
+                <UtensilsCrossed size={20} className="stroke-[2.5]" />
+              </div>
+              <span className="text-2xl font-black text-on-surface tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                Street<span className="text-primary">Bite</span>
+              </span>
+            </Link>
+          </div>
 
-        {/* Navigation Links & Auth */}
-        <nav className="flex items-center gap-3 sm:gap-5">
-          <Link href="/" className="transition-colors uppercase tracking-wider text-primary font-extrabold text-xs sm:text-sm hidden md:block">
-            Home
-          </Link>
+          {/* Navigation Links & Auth */}
+          <nav className="flex items-center gap-3 sm:gap-5">
+            <Link href="/" className="transition-colors uppercase tracking-wider text-primary font-extrabold text-xs sm:text-sm hidden md:block">
+              Home
+            </Link>
 
-          <Link href="/saved" className="text-xs sm:text-sm text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider font-extrabold hidden md:block">
-            Saved
-          </Link>
+            <Link href="/saved" className="text-xs sm:text-sm text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider font-extrabold hidden md:block">
+              Saved
+            </Link>
+
+            {/* List a Cart Button */}
+            <button
+              onClick={() => setIsSubmitModalOpen(true)}
+              className="px-3.5 py-1.5 bg-amber-400 text-slate-950 font-black rounded-full border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] text-xs uppercase tracking-wider items-center gap-1.5 hover:-translate-y-0.5 transition-transform cursor-pointer hidden sm:flex"
+            >
+              <Plus size={15} className="stroke-[3]" />
+              <span>List a Cart</span>
+            </button>
 
           {/* User Auth Section (Hidden on mobile screens: hidden md:flex) */}
           <div className="relative hidden md:flex items-center pl-3 border-l-2 border-on-surface">
@@ -150,5 +162,11 @@ export default function Header() {
 
       </div>
     </header>
+
+    <UserSubmitCartModal 
+      isOpen={isSubmitModalOpen} 
+      onClose={() => setIsSubmitModalOpen(false)} 
+    />
+  </>
   );
 }

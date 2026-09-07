@@ -1,37 +1,52 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../../components/NavBar';
 import Footer from '../../components/Footer';
 import BottomNav from '../../components/BottomNav';
 import { useAuth, UserRole } from '../../lib/useAuth';
-import { ArrowLeft } from 'lucide-react';
+import { fetchStreetFoodCarts } from '../../lib/supabase/adapters';
+import { StreetFoodCart } from '../../lib/mockData';
+import UserSubmitCartModal from '../../components/user/UserSubmitCartModal';
+import { Plus, Store, Clock, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user, loading, signInWithGoogle, toggleUserRole, signOut } = useAuth();
   const isAdmin = user?.role === UserRole.ADMIN;
+
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [userSubmissions, setUserSubmissions] = useState<StreetFoodCart[]>([]);
+
+  const loadSubmissions = async () => {
+    if (!user) return;
+    const allCarts = await fetchStreetFoodCarts(true);
+    const mySubmissions = allCarts.filter(
+      (c) => c.submittedBy === user.name || (c.status === 'pending' && user)
+    );
+    setUserSubmissions(mySubmissions);
+  };
+
+  useEffect(() => {
+    loadSubmissions();
+  }, [user]);
 
   return (
     <>
       <Header />
     
       <main className="w-full items-center justify-center flex pt-8 md:pt-28 lg:pt-36 min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 flex flex-col gap-6 ">
-          
-          
-         
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 flex flex-col gap-6 w-full">
 
           {!user ? (
             /* Unauthenticated Profile View - Clean Text Layout */
             <div className="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl shadow-sm text-center flex flex-col items-center gap-6">
-              
               <div className="space-y-2 w-fit">
                 <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                   Welcome to StreetBite
                 </h1>
                 <p className="text-sm font-medium text-slate-500 leading-relaxed">
-                  Sign in with your Google account to rate street food carts, save your favorite stalls, and access admin tools.
+                  Sign in with your Google account to rate street food carts, save your favorite stalls, submit new vendors, and access admin tools.
                 </p>
               </div>
 
@@ -39,7 +54,7 @@ export default function ProfilePage() {
               <button
                 onClick={() => signInWithGoogle(true)}
                 disabled={loading}
-                className="w-full w-fit py-4 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-2xl shadow-sm uppercase tracking-wider flex items-center justify-center gap-3 transition-transform active:scale-[0.99] text-sm cursor-pointer disabled:opacity-60"
+                className="w-fit py-4 px-8 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-2xl shadow-sm uppercase tracking-wider flex items-center justify-center gap-3 transition-transform active:scale-[0.99] text-sm cursor-pointer disabled:opacity-60"
               >
                 <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -55,7 +70,7 @@ export default function ProfilePage() {
             <div className="space-y-6">
               
               {/* User Account Card */}
-              <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
+              <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left border border-slate-200 dark:border-slate-800">
                 <img
                   src={user.avatar}
                   alt={user.name}
@@ -79,8 +94,71 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+              {/* Submit Food Cart Button Callout */}
+              <div className="p-6 bg-amber-400 text-slate-950 rounded-3xl shadow-sm border-2 border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-black text-lg" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                    Know a Great Food Cart?
+                  </h3>
+                  <p className="text-xs font-extrabold text-slate-900/80">
+                    Submit vendor details for admin verification and get them featured live on StreetBite!
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsSubmitModalOpen(true)}
+                  className="px-5 py-3 bg-slate-950 text-white font-black text-xs uppercase tracking-wider rounded-2xl border-2 border-slate-950 shadow-[3px_3px_0px_0px_#ffffff] hover:bg-slate-900 transition-transform active:scale-[0.98] flex items-center gap-2 cursor-pointer flex-shrink-0"
+                >
+                  <Plus size={16} className="stroke-[3]" />
+                  <span>List a Cart</span>
+                </button>
+              </div>
+
+              {/* My Submissions Section */}
+              {userSubmissions.length > 0 && (
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm space-y-4 border border-slate-200 dark:border-slate-800">
+                  <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider px-1">
+                    My Cart Submissions ({userSubmissions.length})
+                  </h3>
+
+                  <div className="space-y-3">
+                    {userSubmissions.map((cart) => (
+                      <div
+                        key={cart.id}
+                        className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <img src={cart.image} alt={cart.name} className="w-12 h-12 rounded-xl object-cover border border-slate-300" />
+                          <div>
+                            <p className="font-black text-sm text-slate-900 dark:text-white">{cart.name}</p>
+                            <p className="text-xs text-slate-500 font-medium">{cart.category} • {cart.address}</p>
+                          </div>
+                        </div>
+
+                        <div>
+                          {cart.status === 'pending' && (
+                            <span className="px-2.5 py-1 bg-amber-100 text-amber-900 border border-amber-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-1">
+                              <Clock size={12} /> Under Review
+                            </span>
+                          )}
+                          {cart.status === 'published' && (
+                            <span className="px-2.5 py-1 bg-emerald-100 text-emerald-900 border border-emerald-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-1">
+                              <CheckCircle2 size={12} /> Live / Published
+                            </span>
+                          )}
+                          {cart.status === 'rejected' && (
+                            <span className="px-2.5 py-1 bg-rose-100 text-rose-900 border border-rose-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-1">
+                              <XCircle size={12} /> Rejected
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Account Quick Links & Controls */}
-              <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm space-y-3">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm space-y-3 border border-slate-200 dark:border-slate-800">
                 <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider px-1">
                   Account Menu
                 </h3>
@@ -130,6 +208,13 @@ export default function ProfilePage() {
 
         </div>
       </main>
+
+      <UserSubmitCartModal
+        isOpen={isSubmitModalOpen}
+        onClose={() => setIsSubmitModalOpen(false)}
+        onSuccess={() => loadSubmissions()}
+      />
+
       <Footer />
       <BottomNav />
     </>

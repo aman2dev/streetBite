@@ -5,7 +5,7 @@ import Header from '../../components/NavBar';
 import Footer from '../../components/Footer';
 import BottomNav from '../../components/BottomNav';
 import { StreetFoodCart } from '../../lib/mockData';
-import { fetchStreetFoodCarts, createCart, updateCart, deleteCart } from '../../lib/supabase/adapters';
+import { fetchStreetFoodCarts, createCart, updateCart, deleteCart, updateCartStatus } from '../../lib/supabase/adapters';
 import { CheckCircle } from 'lucide-react';
 
 import {
@@ -54,12 +54,33 @@ export default function AdminDashboardPage() {
     { name: '', price: '₹', isVeg: true },
   ]);
 
-  // Load carts data
+  // Load carts data (including pending user submissions for admin moderation)
   const loadCartsData = async () => {
     setLoading(true);
-    const data = await fetchStreetFoodCarts();
+    const data = await fetchStreetFoodCarts(true);
     setCarts(data);
     setLoading(false);
+  };
+
+  useEffect(() => {
+    loadCartsData();
+  }, []);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleApproveCart = async (cart: StreetFoodCart) => {
+    await updateCartStatus(cart.id, 'published');
+    showToast(`Cart "${cart.name}" approved and published live! 💚`);
+    loadCartsData();
+  };
+
+  const handleRejectCart = async (cart: StreetFoodCart) => {
+    await updateCartStatus(cart.id, 'rejected');
+    showToast(`Cart "${cart.name}" status set to Rejected 🛑`);
+    loadCartsData();
   };
 
   useEffect(() => {
@@ -295,6 +316,8 @@ export default function AdminDashboardPage() {
             onDeleteCart={handleDeleteCart}
             onToggleStatus={handleToggleStatus}
             onOpenAddModal={handleOpenAddModal}
+            onApproveCart={handleApproveCart}
+            onRejectCart={handleRejectCart}
           />
 
         </div>

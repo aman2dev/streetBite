@@ -20,6 +20,8 @@ interface AdminCartListProps {
   onDeleteCart: (cart: StreetFoodCart) => void;
   onToggleStatus: (cart: StreetFoodCart) => void;
   onOpenAddModal: () => void;
+  onApproveCart?: (cart: StreetFoodCart) => void;
+  onRejectCart?: (cart: StreetFoodCart) => void;
 }
 
 export default function AdminCartList({
@@ -29,6 +31,8 @@ export default function AdminCartList({
   onDeleteCart,
   onToggleStatus,
   onOpenAddModal,
+  onApproveCart,
+  onRejectCart,
 }: AdminCartListProps) {
   if (loading) {
     return (
@@ -60,7 +64,9 @@ export default function AdminCartList({
       {carts.map((cart) => (
         <div
           key={cart.id}
-          className="bg-surface-container-lowest p-5 rounded-2xl border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-primary transition-colors"
+          className={`p-5 rounded-2xl border-2 border-on-surface shadow-[4px_4px_0px_0px_#1a1c1c] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 transition-colors ${
+            cart.status === 'pending' ? 'bg-amber-50/80 border-amber-500' : 'bg-surface-container-lowest hover:border-primary'
+          }`}
         >
           {/* Left: Thumbnail & Details */}
           <div className="flex items-start sm:items-center gap-4 flex-1">
@@ -84,6 +90,18 @@ export default function AdminCartList({
                   {cart.category}
                 </span>
 
+                {cart.status === 'pending' && (
+                  <span className="px-2.5 py-0.5 bg-amber-400 text-slate-950 font-black rounded-md text-[11px] uppercase border border-on-surface animate-pulse">
+                    ⏳ Under Review
+                  </span>
+                )}
+
+                {cart.status === 'rejected' && (
+                  <span className="px-2.5 py-0.5 bg-rose-400 text-slate-950 font-black rounded-md text-[11px] uppercase border border-on-surface">
+                    🛑 Rejected
+                  </span>
+                )}
+
                 <button
                   onClick={() => onToggleStatus(cart)}
                   className={`px-2.5 py-0.5 rounded-md text-[11px] font-extrabold uppercase border border-on-surface cursor-pointer hover:opacity-80 transition-opacity ${
@@ -99,8 +117,13 @@ export default function AdminCartList({
                 </span>
               </div>
 
-              <h3 className="text-xl font-extrabold text-on-surface mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                {cart.name}
+              <h3 className="text-xl font-extrabold text-on-surface mb-1 flex items-center gap-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <span>{cart.name}</span>
+                {cart.submittedBy && (
+                  <span className="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-300">
+                    User Submission ({cart.submittedBy})
+                  </span>
+                )}
               </h3>
 
               {cart.specialty && (
@@ -134,8 +157,25 @@ export default function AdminCartList({
             </div>
           </div>
 
-          {/* Right: Quick Action Buttons */}
-          <div className="flex items-center gap-2 w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-on-surface/10">
+          {/* Right: Quick Action Buttons & Verification Controls */}
+          <div className="flex items-center gap-2 w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-on-surface/10 flex-wrap">
+            {cart.status === 'pending' && onApproveCart && onRejectCart && (
+              <div className="flex items-center gap-2 mr-2">
+                <button
+                  onClick={() => onApproveCart(cart)}
+                  className="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-xl border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] text-xs uppercase tracking-wider transition-transform active:translate-x-0.5 cursor-pointer"
+                >
+                  💚 Approve & Publish
+                </button>
+                <button
+                  onClick={() => onRejectCart(cart)}
+                  className="px-3 py-2 bg-rose-200 hover:bg-rose-300 text-rose-950 font-black rounded-xl border-2 border-on-surface shadow-[2px_2px_0px_0px_#1a1c1c] text-xs uppercase tracking-wider transition-transform active:translate-x-0.5 cursor-pointer"
+                >
+                  🛑 Reject
+                </button>
+              </div>
+            )}
+
             <Link
               href={`/cart/${cart.id}`}
               target="_blank"

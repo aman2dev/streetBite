@@ -36,6 +36,8 @@ export interface StreetFoodCart {
   reviews?: Review[];
   latitude?: number;
   longitude?: number;
+  status?: 'pending' | 'published' | 'rejected';
+  submittedBy?: string;
 }
 
 export const MOCK_CARTS: StreetFoodCart[] = [

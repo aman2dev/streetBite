@@ -29,6 +29,8 @@ export type Database = {
           is_open: boolean | null
           images: string[] | null
           menu: Json | null
+          status: string | null
+          submitted_by: string | null
         }
         Insert: {
           id?: string
@@ -49,6 +51,8 @@ export type Database = {
           is_open?: boolean | null
           images?: string[] | null
           menu?: Json | null
+          status?: string | null
+          submitted_by?: string | null
         }
         Update: {
           id?: string
@@ -69,6 +73,8 @@ export type Database = {
           is_open?: boolean | null
           images?: string[] | null
           menu?: Json | null
+          status?: string | null
+          submitted_by?: string | null
         }
         Relationships: [
           {

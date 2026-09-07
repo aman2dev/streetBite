@@ -1,4 +1,4 @@
--- Antigravity StreetBite - Supabase Migration: Add Extended Cart Columns for Admin Dashboard
+-- Antigravity StreetBite - Supabase Migration: Add Extended Cart Columns for Admin Dashboard & User Submissions
 ALTER TABLE public.carts 
   ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Chaat',
   ADD COLUMN IF NOT EXISTS address TEXT,
@@ -10,4 +10,7 @@ ALTER TABLE public.carts
   ADD COLUMN IF NOT EXISTS active_weeks INTEGER DEFAULT 52,
   ADD COLUMN IF NOT EXISTS is_open BOOLEAN DEFAULT true,
   ADD COLUMN IF NOT EXISTS images TEXT[] DEFAULT '{}',
-  ADD COLUMN IF NOT EXISTS menu JSONB DEFAULT '[]'::jsonb;
+  ADD COLUMN IF NOT EXISTS menu JSONB DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'published',
+  ADD COLUMN IF NOT EXISTS submitted_by TEXT;
+

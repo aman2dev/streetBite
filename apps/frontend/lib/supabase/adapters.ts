@@ -151,13 +151,16 @@ export function mapSupabaseCartToUi(
     menu: parsedMenu,
     latitude,
     longitude,
+    status: (cart.status as 'pending' | 'published' | 'rejected') || 'published',
+    submittedBy: cart.submitted_by || undefined,
   };
 }
 
 /**
- * Fetches all street food carts from Supabase + Local persistence.
+ * Fetches street food carts from Supabase + Local persistence.
+ * If includePending is false (default), only published carts are returned for standard users.
  */
-export async function fetchStreetFoodCarts(): Promise<StreetFoodCart[]> {
+export async function fetchStreetFoodCarts(includePending: boolean = false): Promise<StreetFoodCart[]> {
   const localCarts = getStoredCarts();
   const deletedIds = getDeletedCartIds();
 
@@ -176,7 +179,7 @@ export async function fetchStreetFoodCarts(): Promise<StreetFoodCart[]> {
           combined.push(c);
         }
       });
-      return combined;
+      return includePending ? combined : combined.filter((c) => c.status !== 'pending' && c.status !== 'rejected');
     }
 
     const { data: reviewsData } = await supabase
@@ -202,7 +205,11 @@ export async function fetchStreetFoodCarts(): Promise<StreetFoodCart[]> {
       }
     });
 
-    return finalCombined;
+    if (includePending) {
+      return finalCombined;
+    }
+
+    return finalCombined.filter((c) => c.status !== 'pending' && c.status !== 'rejected');
   } catch (err) {
     console.warn('Supabase fetch failed, using local/mock carts:', err);
     const mergedBase = MOCK_CARTS.filter((c) => !deletedIds.includes(c.id));
@@ -212,7 +219,7 @@ export async function fetchStreetFoodCarts(): Promise<StreetFoodCart[]> {
         combined.push(c);
       }
     });
-    return combined;
+    return includePending ? combined : combined.filter((c) => c.status !== 'pending' && c.status !== 'rejected');
   }
 }
 
@@ -252,12 +259,14 @@ export async function fetchCartById(id: string): Promise<StreetFoodCart | undefi
 }
 
 /**
- * Admin Action: Creates a new cart in Supabase and local storage.
+ * Creates a new cart in Supabase and local storage.
+ * Status defaults to 'published' for admins and 'pending' for user submissions.
  */
 export async function createCart(cartData: Omit<StreetFoodCart, 'id' | 'rating' | 'reviewsCount'> & { id?: string }): Promise<StreetFoodCart> {
   const generatedId = cartData.id || `cart-${Date.now()}`;
   const lat = cartData.latitude ?? 25.6112;
   const lng = cartData.longitude ?? 85.1442;
+  const cartStatus = cartData.status || 'published';
 
   const newCart: StreetFoodCart = {
     id: generatedId,
@@ -281,6 +290,8 @@ export async function createCart(cartData: Omit<StreetFoodCart, 'id' | 'rating' 
     reviews: [],
     latitude: lat,
     longitude: lng,
+    status: cartStatus,
+    submittedBy: cartData.submittedBy,
   };
 
   // 1. Save locally for instant persistence & offline support
@@ -306,12 +317,36 @@ export async function createCart(cartData: Omit<StreetFoodCart, 'id' | 'rating' 
       is_open: newCart.isOpen,
       images: newCart.images,
       menu: newCart.menu as any,
+      status: cartStatus,
+      submitted_by: cartData.submittedBy || null,
     });
   } catch (e) {
     console.warn('Supabase create cart attempt failed (operating in fallback local state):', e);
   }
 
   return newCart;
+}
+
+/**
+ * Admin Action: Approves or rejects a submitted cart.
+ */
+export async function updateCartStatus(id: string, status: 'published' | 'rejected'): Promise<boolean> {
+  const existing = await fetchCartById(id);
+  if (existing) {
+    saveStoredCart({ ...existing, status });
+  }
+
+  try {
+    const supabase = createClient();
+    await supabase
+      .from('carts')
+      .update({ status })
+      .eq('id', id);
+  } catch (e) {
+    console.warn('Supabase update cart status attempt failed:', e);
+  }
+
+  return true;
 }
 
 /**
